@@ -1,0 +1,447 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Go Speedrun</title>
+    <meta charset='utf-8'>
+    <script>
+      var notesEnabled =  false ;
+    </script>
+    <script src='./static/slides.js'></script>
+
+    
+
+    <script>
+      
+      if (window["location"] && window["location"]["hostname"] == "talks.golang.org") {
+        var _gaq = _gaq || [];
+        _gaq.push(["_setAccount", "UA-11222381-6"]);
+        _gaq.push(["b._setAccount", "UA-49880327-6"]);
+        window.trackPageview = function() {
+          _gaq.push(["_trackPageview", location.pathname+location.hash]);
+          _gaq.push(["b._trackPageview", location.pathname+location.hash]);
+        };
+        window.trackPageview();
+        window.trackEvent = function(category, action, opt_label, opt_value, opt_noninteraction) {
+          _gaq.push(["_trackEvent", category, action, opt_label, opt_value, opt_noninteraction]);
+          _gaq.push(["b._trackEvent", category, action, opt_label, opt_value, opt_noninteraction]);
+        };
+      }
+    </script>
+  </head>
+
+  <body style='display: none'>
+
+    <section class='slides layout-widescreen'>
+
+      <article>
+        <h1>Go Speedrun</h1>
+        
+        
+        
+      </article>
+
+  
+  
+      <article >
+      
+        <h3>The Language</h3>
+        <ul>
+<li>&quot;Go&quot;, not &quot;Golang&quot;</li>
+<li>Strong focus on concurrency to &quot;get the most out of multicore and networked machines&quot;</li>
+<li>&quot;It's a fast, statically typed, compiled language that feels like a dynamically typed, interpreted language.&quot;</li>
+<li>Syntax similar to C</li>
+<li>Statically linked (most of the time)</li>
+</ul>
+
+      
+      <span class="pagenumber">2</span>
+      </article>
+  
+  
+  
+      <article >
+      
+        <h3>Way better resources than this</h3>
+        <ul>
+<li><a href="https://tour.golang.org" target="_blank" rel="noopener">Tour of GO</a></li>
+<li><a href="https://golang.org/doc/effective_go" target="_blank" rel="noopener">Effective GO</a></li>
+<li><a href="https://www.youtube.com/watch?v=f6kdp27TYZs" target="_blank" rel="noopener">Go Concurrency Patterns</a></li>
+</ul>
+
+      
+      <span class="pagenumber">3</span>
+      </article>
+  
+  
+  
+      <article >
+      
+        <h3>Hello</h3>
+        
+  <div class="code playground" >
+<pre><span num="1">package main</span>
+<span num="2"></span>
+<span num="3">import &#34;fmt&#34;</span>
+<span num="4"></span>
+<span num="5">type User struct { // Available outside of package</span>
+<span num="6">    FirstName string // Available outside of package</span>
+<span num="7">    LastName  string</span>
+<span num="8">    canGreet  bool // Unavailable outside of package</span>
+<span num="9">}</span>
+<span num="10"></span>
+<span num="11">func main() {</span>
+<span num="12">    user := User{</span>
+<span num="13">        FirstName: &#34;Ellen&#34;,</span>
+<span num="14">        LastName:  &#34;Ripley&#34;,</span>
+<span num="15">        canGreet:  true,</span>
+<span num="16">    }</span>
+<span num="17"></span>
+<span num="18">    fmt.Printf(&#34;Hello, %s\n&#34;, user)</span>
+<span num="19">}</span>
+</pre>
+</div>
+
+      
+      <span class="pagenumber">4</span>
+      </article>
+  
+  
+  
+      <article >
+      
+        <h3>Methods</h3>
+        
+  <div class="code playground" >
+<pre><span num="1">package main</span>
+<span num="2"></span>
+<span num="3">import &#34;fmt&#34;</span>
+<span num="4"></span>
+<span num="5">type User struct {</span>
+<span num="6">    FirstName string</span>
+<span num="7">    LastName  string</span>
+<span num="8">    canGreet  bool</span>
+<span num="9">}</span>
+<span num="10"></span>
+<span num="11"><b>func (u User) String() string {</b></span>
+<span num="12">    <b>return fmt.Sprintf(&#34;%s %s&#34;, u.FirstName, u.LastName)</b></span>
+<span num="13"><b>}</b></span>
+<span num="14"></span>
+<span num="15">func main() {</span>
+<span num="16">    user := User{</span>
+<span num="17">        FirstName: &#34;Ellen&#34;,</span>
+<span num="18">        LastName:  &#34;Ripley&#34;,</span>
+<span num="19">        canGreet:  true,</span>
+<span num="20">    }</span>
+<span num="21"></span>
+<span num="22">    fmt.Printf(&#34;Hello, %s\n&#34;, user)</span>
+<span num="23">}</span>
+</pre>
+</div>
+
+      
+      <span class="pagenumber">5</span>
+      </article>
+  
+  
+  
+      <article >
+      
+        <h3>Interfaces</h3>
+        <p>go/1.17/libexec/src/fmt/print.go:</p>
+
+  <div class="code" >
+<pre><span num="4">type Stringer interface {</span>
+<span num="5">    String() string</span>
+<span num="6">}</span>
+</pre>
+</div>
+
+      
+      <span class="pagenumber">6</span>
+      </article>
+  
+  
+  
+      <article >
+      
+        <h3>Errors</h3>
+        
+  <div class="code" >
+<pre><span num="19">func makeGreeting(u User) (string, error) {</span>
+<span num="20">    if !u.canGreet {</span>
+<span num="21">        return &#34;&#34;, errors.New(&#34;cannot greet&#34;)</span>
+<span num="22">    }</span>
+<span num="23"></span>
+<span num="24">    return fmt.Sprintf(&#34;Hello, %s %s&#34;, u.FirstName, u.LastName), nil</span>
+<span num="25">}</span>
+</pre>
+</div>
+
+  <div class="code" >
+<pre><span num="30">func main() {</span>
+<span num="37"></span>
+<span num="38">    greeting, err := makeGreeting(user)</span>
+<span num="39">    if err != nil {</span>
+<span num="40">        fmt.Print(&#34;cannot greet: &#34;, err)</span>
+<span num="41">        return</span>
+<span num="42">    }</span>
+<span num="43"></span>
+<span num="44">    fmt.Println(greeting)</span>
+<span num="45">}</span>
+</pre>
+</div>
+
+      
+      <span class="pagenumber">7</span>
+      </article>
+  
+  
+  
+      <article >
+      
+        <h3>Importing</h3>
+        <ul>
+<li>Imports references and downloads source</li>
+</ul>
+
+  <div class="code" >
+<pre><span num="1">package main</span>
+<span num="2"></span>
+<span num="3">import &#34;github.com/sirupsen/logrus&#34;</span>
+<span num="4"></span>
+<span num="5">func main() {</span>
+<span num="6">    logrus.Info(&#34;Hello world!&#34;)</span>
+<span num="7">}</span>
+</pre>
+</div>
+
+      
+      <span class="pagenumber">8</span>
+      </article>
+  
+  
+  
+      <article >
+      
+        <h3>Goroutines</h3>
+        <ul>
+<li>Concurrency primitive</li>
+<li>Small stack that can grow as needed</li>
+<li>Can be created in the hundreds or thousands</li>
+</ul>
+
+      
+      <span class="pagenumber">9</span>
+      </article>
+  
+  
+  
+      <article >
+      
+        <h3>Synchronous</h3>
+        
+  <div class="code playground" >
+<pre style="display: none"><span>package main
+
+import (
+	&#34;fmt&#34;
+	&#34;math/rand&#34;
+	&#34;time&#34;
+)
+
+</span></pre><pre><span num="10">func numbers() {</span>
+<span num="11">    for i := 0; i &lt; 5; i&#43;&#43; {</span>
+<span num="12">        fmt.Println(i)</span>
+<span num="13">        time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)</span>
+<span num="14">    }</span>
+<span num="15">}</span>
+<span num="16"></span>
+<span num="17">func main() {</span>
+<span num="18">    numbers()</span>
+<span num="19">}</span>
+</pre>
+</div>
+
+      
+      <span class="pagenumber">10</span>
+      </article>
+  
+  
+  
+      <article >
+      
+        <h3>Goroutines</h3>
+        
+  <div class="code playground" >
+<pre style="display: none"><span>package main
+
+import (
+	&#34;fmt&#34;
+	&#34;math/rand&#34;
+	&#34;time&#34;
+)
+
+</span></pre><pre><span num="10">func numbers() {</span>
+<span num="11">    for i := 0; i &lt; 5; i&#43;&#43; {</span>
+<span num="12">        fmt.Println(i)</span>
+<span num="13">        time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)</span>
+<span num="14">    }</span>
+<span num="15">}</span>
+<span num="16"></span>
+<span num="17">func main() {</span>
+<span num="18">    <b>go numbers()</b></span>
+<span num="19">    time.Sleep(5 * time.Second)</span>
+<span num="20">}</span>
+</pre>
+</div>
+
+      
+      <span class="pagenumber">11</span>
+      </article>
+  
+  
+  
+      <article >
+      
+        <h3>Channels</h3>
+        
+  <div class="code playground" >
+<pre style="display: none"><span>package main
+
+import (
+	&#34;fmt&#34;
+	&#34;math/rand&#34;
+	&#34;time&#34;
+)
+
+</span></pre><pre><span num="10">func numbers(ch chan int) {</span>
+<span num="11">    for i := 0; i &lt; 5; i&#43;&#43; {</span>
+<span num="12">        <b>ch &lt;- i</b></span>
+<span num="13">        time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)</span>
+<span num="14">    }</span>
+<span num="15">}</span>
+<span num="16"></span>
+<span num="17">func main() {</span>
+<span num="18">    ch := make(chan int)</span>
+<span num="19">    go numbers(ch)</span>
+<span num="20">    for i := 0; i &lt; 5; i&#43;&#43; {</span>
+<span num="21">        <b>v := &lt;-ch</b></span>
+<span num="22">        fmt.Println(v)</span>
+<span num="23">    }</span>
+<span num="24">}</span>
+</pre>
+</div>
+
+      
+      <span class="pagenumber">12</span>
+      </article>
+  
+  
+  
+      <article >
+      
+        <h3>Closing</h3>
+        
+  <div class="code playground" >
+<pre style="display: none"><span>package main
+
+import (
+	&#34;fmt&#34;
+	&#34;math/rand&#34;
+	&#34;time&#34;
+)
+
+</span></pre><pre><span num="10">func numbers(ch chan int) {</span>
+<span num="11">    for i := 0; i &lt; 5; i&#43;&#43; {</span>
+<span num="12">        ch &lt;- i</span>
+<span num="13">        time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)</span>
+<span num="14">    }</span>
+<span num="15">    <b>close(ch)</b></span>
+<span num="16">}</span>
+<span num="17"></span>
+<span num="18">func main() {</span>
+<span num="19">    ch := make(chan int)</span>
+<span num="20">    go numbers(ch)</span>
+<span num="21">    <b>for v := range ch {</b></span>
+<span num="22">        <b>fmt.Println(v)</b></span>
+<span num="23">    <b>}</b></span>
+<span num="24">}</span>
+</pre>
+</div>
+
+      
+      <span class="pagenumber">13</span>
+      </article>
+  
+  
+  
+      <article >
+      
+        <h3>Generator</h3>
+        
+  <div class="code playground" >
+<pre style="display: none"><span>package main
+
+import (
+	&#34;fmt&#34;
+	&#34;math/rand&#34;
+	&#34;time&#34;
+)
+
+</span></pre><pre><span num="10">func numbers() chan int {</span>
+<span num="11">    ch := make(chan int)</span>
+<span num="12"></span>
+<span num="13">    go func() {</span>
+<span num="14">        for i := 0; i &lt; 5; i&#43;&#43; {</span>
+<span num="15">            ch &lt;- i</span>
+<span num="16">            time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)</span>
+<span num="17">        }</span>
+<span num="18">        close(ch)</span>
+<span num="19">    }()</span>
+<span num="20"></span>
+<span num="21">    return ch</span>
+<span num="22">}</span>
+<span num="23"></span>
+<span num="24">func main() {</span>
+<span num="25">    for v := range numbers() {</span>
+<span num="26">        fmt.Println(v)</span>
+<span num="27">    }</span>
+<span num="28">}</span>
+</pre>
+</div>
+
+      
+      <span class="pagenumber">14</span>
+      </article>
+  
+  
+
+      <article>
+        <h3>Thank you</h3>
+        
+      </article>
+
+    </section>
+
+    <div id="help">
+      Use the left and right arrow keys or click the left and right
+      edges of the page to navigate between slides.<br>
+      (Press 'H' or navigate to hide this message.)
+    </div>
+
+    
+    
+
+    <script>
+      (function() {
+        
+        if (window["location"] && window["location"]["hostname"] == "talks.golang.org") {
+          var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true;
+          ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";
+          var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s);
+        }
+      })();
+    </script>
+  </body>
+</html>
