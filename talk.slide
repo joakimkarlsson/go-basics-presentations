@@ -1,7 +1,7 @@
-# Go Speedrun
+Go Speedrun
 
 
-## The Language
+* The Language
 
 - "Go", not "Golang"
 - Strong focus on concurrency to "get the most out of multicore and networked machines"
@@ -9,59 +9,59 @@
 - Syntax similar to C
 - Statically linked (most of the time)
 
-## Way better resources than this
+* Way better resources than this
 
-- [Tour of GO](https://tour.golang.org)
-- [Effective GO](https://golang.org/doc/effective_go)
-- [Go Concurrency Patterns](https://www.youtube.com/watch?v=f6kdp27TYZs)
+- [[https://tour.golang.org][Tour of GO]]
+- [[https://golang.org/doc/effective_go][Effective GO]]
+- [[https://youtu.be/f6kdp27TYZs][Go Concurrency Patterns]]
 
-## Hello
+* Hello
 
 .play intro/hello/hello.go
 
-## Methods
+* Methods
 
 .play intro/hello-formatted/hello-formatted.go
 
-## Interfaces
+* Interfaces
 
 go/1.17/libexec/src/fmt/print.go:
 
 .code intro/interfaces/interfaces.go /START OMIT/,/END OMIT/
 
-## Errors
+* Errors
 
 .code intro/errors/errors.go /START OMIT/,/END OMIT/
 .code intro/errors/errors.go /START2 OMIT/,/END2 OMIT/
 
-## Importing
+* Importing
 
 - Imports references and downloads source
 
 .code intro/importing/importing.go
 
-## Goroutines
+* Goroutines
 
 - Concurrency primitive
 - Small stack that can grow as needed
 - Can be created in the hundreds or thousands
 
-## Synchronous
+* Synchronous
 
 .play ./concurrency/synchronous/synchronous.go /START OMIT/,/END OMIT/
 
-## Goroutines
+* Goroutines
 
 .play ./concurrency/goroutines/goroutines.go /START OMIT/,/END OMIT/
 
-## Channels
+* Channels
 
 .play ./concurrency/channels/channels.go /START OMIT/,/END OMIT/
 
-## Closing
+* Closing
 
 .play ./concurrency/closing/closing.go /START OMIT/,/END OMIT/
 
-## Generator
+* Generator
 
 .play ./concurrency/generator/generator.go /START OMIT/,/END OMIT/
